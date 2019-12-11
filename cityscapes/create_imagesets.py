@@ -16,7 +16,6 @@ from pathlib import Path
 from tqdm import tqdm
 
 
-
 def create_imageset(annotations_path: Path, imageset_name: str) -> list:
     """
     function creates list of images "imageset" from given path
@@ -29,14 +28,15 @@ def create_imageset(annotations_path: Path, imageset_name: str) -> list:
         list of filenames
     """
     imageset = []
-    annotation_images_path = (annotations_path/imageset_name).rglob("*_gtFine_labelTrainIds.png")
+    annotation_images_path = (annotations_path / imageset_name).rglob("*_gtFine_labelTrainIds.png")
     for annotation_image_path in tqdm(annotation_images_path, "processing imageset {}".format(imageset_name)):
         annotation_image_name = annotation_image_path.stem.replace("_gtFine_labelTrainIds", "")
         annotation_image_name_splitted = annotation_image_name.split("_")
         city = annotation_image_name_splitted[0]
-        filename_in_imageset_name = "{}/{}".format(city, annotation_image_name)
+        filename_in_imageset_name = "{}/{}/{}".format(imageset_name, city, annotation_image_name)
         imageset.append(filename_in_imageset_name)
     return imageset
+
 
 def write_imageset_disk(output: Path, imageset_name: str, imageset: list):
     """
@@ -52,6 +52,7 @@ def write_imageset_disk(output: Path, imageset_name: str, imageset: list):
         for i in imageset:
             out.write(i + '\n')
 
+
 def main():
     parser = argparse.ArgumentParser(description='prepare imageset')
     parser.add_argument('--dataset_root', default="/home/fusionresearch/Datasets/cityscapes")
@@ -60,7 +61,7 @@ def main():
     args = parser.parse_args()
 
     dataset_root = Path(args.dataset_root)
-    output_dir  = Path(args.output_dir)
+    output_dir = Path(args.output_dir)
 
     gFine_path = dataset_root / "gtFine"
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -76,6 +77,7 @@ def main():
     write_imageset_disk(output=output_dir, imageset_name="test", imageset=testset)
 
     print("Done creating imagesets")
+
 
 if __name__ == "__main__":
     main()
