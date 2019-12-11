@@ -62,7 +62,7 @@ def main():
     dataset_root = Path(args.dataset_root)
     output_dir  = Path(args.output_dir)
 
-    gFine_path = dataset_root / "gFine"
+    gFine_path = dataset_root / "gtFine"
     output_dir.mkdir(parents=True, exist_ok=True)
 
     # list of train, val, test file sets
