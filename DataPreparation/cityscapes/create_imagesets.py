@@ -47,7 +47,7 @@ def write_imageset_disk(output: Path, imageset_name: str, imageset: list):
         output: path to write imagesets
         imageset_name: name of imageset i.e train
     """
-    imageset_path = output / (imageset_name + "*.txt")
+    imageset_path = output / (imageset_name + ".txt")
     with open(str(imageset_path), 'w') as out:
         for i in imageset:
             out.write(i + '\n')
