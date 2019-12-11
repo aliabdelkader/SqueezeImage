@@ -76,3 +76,6 @@ def main():
     write_imageset_disk(output=output_dir, imageset_name="test", imageset=testset)
 
     print("Done creating imagesets")
+
+if __name__ == "__main__":
+    main()
