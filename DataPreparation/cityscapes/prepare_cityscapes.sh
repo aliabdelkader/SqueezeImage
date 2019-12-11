@@ -1,1 +1,1 @@
-python create_imagsets.py --dataset_root "/home/fusionresearch/Datasets/cityscapes" --output_dir "/home/fusionresearch/SqueezeImage/imagesets"
+python create_imagesets.py --dataset_root "/home/fusionresearch/Datasets/cityscapes" --output_dir "/home/fusionresearch/SqueezeImage/imagesets"
