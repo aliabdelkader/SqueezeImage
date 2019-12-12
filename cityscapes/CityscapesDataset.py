@@ -29,13 +29,13 @@ class CityscapesDataset(Dataset):
     def __len__(self):
         return len(self.filenames)
 
-    def load_image(self, filename):
-        image_path = self.dataset_root_dir / (filename + ".png")
+    def get_image(self, image_path, perform_transforms=True, normalize=True):
         image = cv2.imread(str(image_path))
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         image = cv2.resize(image, dsize=(self.image_width, self.image_height))
-        # image = (image - image.mean()) / image.std()
-        if self.image_transforms:
+        if normalize:
+            image = (image - image.mean()) / image.std()
+        if self.image_transforms and perform_transforms:
             image = self.image_transforms(image)
 
         # swap color axis because
@@ -45,32 +45,24 @@ class CityscapesDataset(Dataset):
         image = image.transpose((2, 0, 1))
         return image
 
-    def load_lidar(self, filename):
-        lidar_path = self.dataset_root_dir / "lidar" / (filename + ".npy")
-        data = np.load(str(lidar_path))
+    def load_input_image(self, filename):
+        image_path = self.dataset_root_dir / "leftImg8bit" / (filename + "_leftImg8bit.png")
+        image = self.get_image(image_path=image_path)
+        return image
 
-        if self.has_labels:
-            lidar, label = data[:, :, :-1], data[:, :, -1]
-        else:
-            lidar = data[:]
-
-        lidar_mask = np.reshape(
-            (lidar[:, :, 4] > 0),
-            [lidar.shape[0], lidar.shape[1], 1])
-
-        lidar = np.concatenate([lidar, lidar_mask], axis=-1)
-
-        lidar = lidar.transpose((2, 0, 1))
-
-        return lidar, label
+    def load_target(self, filename):
+        image_path = self.dataset_root_dir / "gtFine" / (filename + "_gtFine_color.png")
+        image = self.get_image(image_path=image_path, perform_transforms=False, normalize=False)
+        return image
 
     def __getitem__(self, idx):
 
         filename = self.filenames[idx]
-        image = self.load_image(filename).astype(np.float32)
-        lidar, label = self.load_lidar(filename)
-        lidar, label = lidar.astype(np.float32), label.astype(np.int64)
+        image = self.load_input_image(filename).astype(np.float32)
+        image = image.astype(np.float32)
         if self.has_labels:
-            return [torch.from_numpy(image), torch.from_numpy(lidar), torch.from_numpy(label)]
+            target = self.load_target(filename)
+            target = target.astype(np.int64)
+            return [torch.from_numpy(image), torch.from_numpy(target)]
         else:
-            return [torch.from_numpy(image), torch.from_numpy(lidar)]
+            return [torch.from_numpy(image)]
