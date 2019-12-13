@@ -6,7 +6,7 @@ python main.py \
 --model_name "${model_name}" \
 --dataset_root_path "/mnt/sdb1/ali/cityscapes" \
 --dataset_config_path "cityscapes/cityscapes.yaml" \
---batch_size 32 \
+--batch_size 16 \
 --imageset_path "cityscapes/imagesets" \
 --results_dir "results/${model_name}" \
 --learning_rate "0.001" \
