@@ -7,7 +7,7 @@ python main.py \
 --dataset_root_path "/mnt/sdb1/ali/cityscapes" \
 --dataset_config_path "cityscapes/cityscapes.yaml" \
 --batch_size 1 \
---imageset_path "cityscapes/imageset" \
+--imageset_path "cityscapes/imagesets" \
 --results_dir "results/${model_name}" \
 --learning_rate "0.001" \
 --number_epochs "100" \
