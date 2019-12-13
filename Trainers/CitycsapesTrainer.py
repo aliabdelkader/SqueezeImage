@@ -33,7 +33,7 @@ class CityscapesTrainer:
         self.class_map = class_map
         self.validation_confusion_matrix = MetricsCalculator(class_map=self.class_map)
         self.train_confusion_matrix = MetricsCalculator(class_map=self.class_map)
-        self.scheduler = ReduceLROnPlateau(optimizer, mode='max', factor=0.1, patience=0, verbose=True)
+        self.scheduler = ReduceLROnPlateau(self.optimizer, mode='max', factor=0.1, patience=1, verbose=True)
 
         # log model once
         images, labels = next(iter(trainloader))
