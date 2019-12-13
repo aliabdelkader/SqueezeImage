@@ -35,9 +35,9 @@ class CityscapesTrainer:
         self.train_confusion_matrix = MetricsCalculator(class_map=self.class_map)
         self.scheduler = ReduceLROnPlateau(self.optimizer, mode='max', factor=0.1, patience=1, verbose=True)
 
-        # log model once
-        images, labels = next(iter(trainloader))
-        logger.add_graph(model=model, input=images)
+        # # log model once
+        # images, labels = next(iter(trainloader))
+        # logger.add_graph(model=model, input=images)
 
     def train_epoch(self):
         losses = []
