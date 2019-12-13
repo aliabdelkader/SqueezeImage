@@ -205,8 +205,8 @@ class SqueezeImage(nn.Module):
             nn.LogSoftmax(dim=1)
         )
 
-    def forward(self, x):
-        x = self.entry_flow(x)
+    def forward(self, image):
+        x = self.entry_flow(image)
         x, skips = self.encoder(x)
         x = self.decoder(x, skips)
         x = self.exit_flow(x)
