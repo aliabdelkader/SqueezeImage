@@ -49,7 +49,7 @@ class CityscapesDataset(Dataset):
 
     def load_target(self, filename):
         image_path = self.dataset_root_dir / "gtFine" / (filename + "_gtFine_labelTrainIds.png")
-        image = cv2.imread(str(image_path))
+        image = cv2.imread(str(image_path), cv2.CV_LOAD_IMAGE_GRAYSCALE)
         image = cv2.resize(image, dsize=(self.image_width, self.image_height))
 
         # if self.image_transforms:
@@ -69,7 +69,7 @@ class CityscapesDataset(Dataset):
         image = image.astype(np.float32)
         if self.has_labels:
             target = self.load_target(filename)
-            target = target.astype(np.int64)
+            target = target.astype(np.int64).squeeze()
             return [torch.from_numpy(image), torch.from_numpy(target)]
         else:
             return [torch.from_numpy(image)]
