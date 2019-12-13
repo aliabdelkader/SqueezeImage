@@ -29,30 +29,37 @@ class CityscapesDataset(Dataset):
     def __len__(self):
         return len(self.filenames)
 
-    def get_image(self, image_path, perform_transforms=True, normalize=True):
+    def load_input_image(self, filename):
+        image_path = self.dataset_root_dir / "leftImg8bit" / (filename + "_leftImg8bit.png")
+
         image = cv2.imread(str(image_path))
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         image = cv2.resize(image, dsize=(self.image_width, self.image_height))
-        if normalize:
-            image = (image - image.mean()) / image.std()
-        if self.image_transforms and perform_transforms:
-            image = self.image_transforms(image)
+        image = image / 255
+        # if self.image_transforms:
+        #     image = self.image_transforms(image)
 
         # swap color axis because
         # numpy image: H x W x C
         # torch image: C X H X W
 
         image = image.transpose((2, 0, 1))
-        return image
 
-    def load_input_image(self, filename):
-        image_path = self.dataset_root_dir / "leftImg8bit" / (filename + "_leftImg8bit.png")
-        image = self.get_image(image_path=image_path)
         return image
 
     def load_target(self, filename):
         image_path = self.dataset_root_dir / "gtFine" / (filename + "_gtFine_color.png")
-        image = self.get_image(image_path=image_path, perform_transforms=False, normalize=False)
+        image = cv2.imread(str(image_path))
+        image = cv2.resize(image, dsize=(self.image_width, self.image_height))
+
+        # if self.image_transforms:
+        #     image = self.image_transforms(image)
+
+        # swap color axis because
+        # numpy image: H x W x C
+        # torch image: C X H X W
+
+        image = image.transpose((2, 0, 1))
         return image
 
     def __getitem__(self, idx):

@@ -33,6 +33,20 @@ class Fire(nn.Module):
         ], 1)
 
 
+class FireRes(nn.Module):
+    def __init__(self, inplanes, squeeze_planes, expand1x1_planes, expand3x3_planes, bn_d=0.1):
+        super(FireRes, self).__init__()
+
+        self.Fire = Fire(inplanes, squeeze_planes,
+                         expand1x1_planes, expand3x3_planes, bn_d=0.1)
+        self.skip = nn.Conv2d(in_channels=inplanes, out_channels=expand3x3_planes + expand1x1_planes, kernel_size=1)
+
+    def forward(self, inp):
+        x = self.Fire(inp)
+        skip = self.skip(inp)
+        return x + skip
+
+
 class FireUp(nn.Module):
     """
     copied from: https://github.com/PRBonn/lidar-bonnetal
@@ -65,10 +79,113 @@ class FireUp(nn.Module):
         ], 1)
 
 
+class Decoder(nn.Module):
+    """
+
+    copied from: https://github.com/PRBonn/lidar-bonnetal
+    """
+
+    def __init__(self, OS, bn_d, encoder_feature_depth, drop_prob):
+        super(Decoder, self).__init__()
+        self.OS = OS
+
+        # decoder
+        # decoder
+        self.firedec10 = FireUp(encoder_feature_depth, 64, 128, 128, bn_d=bn_d)
+        self.firedec11 = FireUp(256, 32, 64, 64, bn_d=bn_d, )
+        self.firedec12 = FireUp(128, 16, 32, 32, bn_d=bn_d)
+        # self.firedec13 = FireUp(64, 16, 32, 32, bn_d=bn_d)
+
+        self.dropout = nn.Dropout2d(drop_prob)
+
+        # last channels
+        self.last_channels = 64
+
+    def run_layer(self, x, layer, skips, os):
+        feats = layer(x)  # up
+        if feats.shape[-1] > x.shape[-1]:
+            os //= 2  # match skip
+            feats = feats + skips[os]  # add skip
+        x = feats
+        return x, skips, os
+
+    def forward(self, x, skips):
+        os = self.OS
+
+        # run layers
+        x, skips, os = self.run_layer(x, self.firedec10, skips, os)
+        x, skips, os = self.run_layer(x, self.firedec11, skips, os)
+        x, skips, os = self.run_layer(x, self.firedec12, skips, os)
+        # x, skips, os = self.run_layer(x, self.firedec13, skips, os)
+
+        x = self.dropout(x)
+
+        return x
+
+    def get_last_depth(self):
+        return self.last_channels
+
+
+class Encoder(nn.Module):
+    """
+    copied from: https://github.com/PRBonn/lidar-bonnetal
+    """
+
+    def __init__(self, bn_d, drop_prob):
+        # Call the super constructor
+        super(Encoder, self).__init__()
+        self.bn_d = bn_d
+        self.drop_prob = drop_prob
+
+
+        # encoder
+        self.fire23 = nn.Sequential(nn.Conv2d(kernel_size=2, stride=2, padding=1),
+                                    FireRes(64, 16, 64, 64, bn_d=self.bn_d),
+                                    FireRes(128, 16, 64, 64, bn_d=self.bn_d))
+        self.fire45 = nn.Sequential(nn.Conv2d(kernel_size=2, stride=2, padding=1),
+                                    FireRes(128, 32, 128, 128, bn_d=self.bn_d),
+                                    FireRes(256, 32, 128, 128, bn_d=self.bn_d))
+        self.fire6789 = nn.Sequential(nn.Conv2d(kernel_size=2, stride=2, padding=1),
+                                      FireRes(256, 48, 192, 192, bn_d=self.bn_d),
+                                      FireRes(384, 48, 192, 192, bn_d=self.bn_d),
+                                      FireRes(384, 64, 256, 256, bn_d=self.bn_d),
+                                      FireRes(512, 64, 256, 256, bn_d=self.bn_d))
+
+        # output
+        self.dropout = nn.Dropout2d(self.drop_prob)
+
+        # last channels
+        self.last_channels = 512
+
+    def run_layer(self, x, layer, skips, os):
+        y = layer(x)
+        if y.shape[2] < x.shape[2] or y.shape[3] < x.shape[3]:
+            skips[os] = x.detach()
+            os *= 2
+        x = y
+        return x, skips, os
+
+    def forward(self, x):
+        # store for skip connections
+        skips = {}
+        os = 1
+
+        x, skips, os = self.run_layer(x, self.fire23, skips, os)
+        x = self.dropout(x)
+        # x, skips, os = self.run_layer(x, self.dropout, skips, os)
+        x, skips, os = self.run_layer(x, self.fire45, skips, os)
+        x = self.dropout(x)
+        # x, skips, os = self.run_layer(x, self.dropout, skips, os)
+        x, skips, os = self.run_layer(x, self.fire6789, skips, os)
+        x = self.dropout(x)
+        # x, skips, os = self.run_layer(x, self.dropout, skips, os)
+
+        return x, skips
+
 
 class SqueezeImage(nn.Module):
 
-    def __int__(self, num_classes=20):
+    def __init__(self, num_classes):
         super(SqueezeImage, self).__init__()
         self.num_classes = num_classes
 
@@ -78,31 +195,20 @@ class SqueezeImage(nn.Module):
             nn.ReLU(inplace=True)
         )
 
-        self.encoder = nn.Sequential(
-            Fire(inplanes=64, squeeze_planes=16, expand1x1_planes=128, expand3x3_planes=128),
-            Fire(inplanes=128, squeeze_planes=32, expand1x1_planes=256, expand3x3_planes=256),
-            Fire(inplanes=256, squeeze_planes=64, expand1x1_planes=512, expand3x3_planes=512),
-            Fire(inplanes=512, squeeze_planes=128, expand1x1_planes=1024, expand3x3_planes=1024),
+        self.encoder = Encoder(bn_d=0.1, drop_prob=0.3)
 
-        )
-
-        self.decoder = nn.Sequential(
-            FireUp(inplanes=1024, squeeze_planes=128, expand1x1_planes=512, expand3x3_planes=512),
-            FireUp(inplanes=512, squeeze_planes=64, expand1x1_planes=256, expand3x3_planes=256),
-            FireUp(inplanes=256, squeeze_planes=32, expand1x1_planes=128, expand3x3_planes=128),
-            FireUp(inplanes=128, squeeze_planes=16, expand1x1_planes=64, expand3x3_planes=64),
-        )
+        self.decoder = Decoder(OS=8, bn_d=0.1, drop_prob=0.3)
 
         self.exit_flow = nn.Sequential(
             nn.Conv2d(64, self.num_classes, kernel_size=1),
-            nn.Sogi
+            nn.LogSoftmax(dim=1)
         )
 
     def forward(self, x):
         x = self.entry_flow(x)
-        x = self.encoder(x)
-        x = self.decoder(x)
-
+        x, skips = self.encoder(x)
+        x = self.decoder(x, skips)
+        x = self.exit_flow(x)
         return x
 
     def save(self, saving_dir="results", best=False):

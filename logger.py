@@ -1,6 +1,6 @@
 from pathlib import Path
 from torch.utils.tensorboard import SummaryWriter
-from metric import MetricsCalcuator
+from metric import MetricsCalculator
 
 
 class Logger:
@@ -22,10 +22,10 @@ class Logger:
         self.writer.flush()
 
     def add_image(self, tag, image_tensor):
-        self.writer.add_image(tag=tag, img_tensor=image)
+        self.writer.add_image(tag=tag, img_tensor=image_tensor)
         self.writer.flush()
 
-    def add_metrics(self, metrics_calcuator: MetricsCalcuator, step=0):
+    def add_metrics(self, metrics_calcuator: MetricsCalculator, step=0):
         """
         function logs metrics per class in tensorboard
         """

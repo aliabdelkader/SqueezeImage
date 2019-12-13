@@ -1,11 +1,12 @@
 import torch
+from torch.optim.lr_scheduler import ReduceLROnPlateau
 from tqdm import tqdm
 import numpy as np
 from metric import MetricsCalculator
 from pathlib import Path
 
 
-class Trainer:
+class CityscapesTrainer:
 
     def __init__(self, model, loss_fn, optimizer, trainloader, validloader, num_epochs, device="cpu",
                  results_dir="results", logger=None, class_map=None):
@@ -32,6 +33,7 @@ class Trainer:
         self.class_map = class_map
         self.validation_confusion_matrix = MetricsCalculator(class_map=self.class_map)
         self.train_confusion_matrix = MetricsCalculator(class_map=self.class_map)
+        self.scheduler = ReduceLROnPlateau(optimizer, mode='max', factor=0.1, patience=0, verbose=True)
 
         # log model once
         images, labels = next(iter(trainloader))
@@ -40,8 +42,9 @@ class Trainer:
     def train_epoch(self):
         losses = []
         self.train_confusion_matrix.reset_confusion_matrix()
+
         for train_image, train_label in tqdm(self.trainloader, "training epoch"):
-            train_image, train_label = train_image.to(self.device),train_label.to(self.device)
+            train_image, train_label = train_image.to(self.device), train_label.to(self.device)
 
             self.optimizer.zero_grad()  # clear previous gradients
 
@@ -98,6 +101,7 @@ class Trainer:
             self.model.eval()
             val_loss = self.val_epoch()
             val_miou = self.validation_confusion_matrix.calculate_average_iou()
+            self.scheduler.step(val_miou)
             if val_miou > best_preformance:
                 best_preformance = val_miou
                 print("best performance {} saving model".format(best_preformance))
