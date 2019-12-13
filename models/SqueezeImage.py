@@ -141,13 +141,13 @@ class Encoder(nn.Module):
         self.last_channels = 512
 
         # encoder
-        self.fire23 = nn.Sequential(nn.Conv2d(in_channels=64, out_channels=64, kernel_size=2, stride=2, padding=1),
+        self.fire23 = nn.Sequential(nn.Conv2d(in_channels=64, out_channels=64, kernel_size=2, stride=2, padding=0),
                                     FireRes(64, 16, 64, 64, bn_d=self.bn_d),
                                     FireRes(128, 16, 64, 64, bn_d=self.bn_d))
-        self.fire45 = nn.Sequential(nn.Conv2d(in_channels=128, out_channels=128, kernel_size=2, stride=2, padding=1),
+        self.fire45 = nn.Sequential(nn.Conv2d(in_channels=128, out_channels=128, kernel_size=2, stride=2, padding=0),
                                     FireRes(128, 32, 128, 128, bn_d=self.bn_d),
                                     FireRes(256, 32, 128, 128, bn_d=self.bn_d))
-        self.fire6789 = nn.Sequential(nn.Conv2d(in_channels=256, out_channels=256, kernel_size=2, stride=2, padding=1),
+        self.fire6789 = nn.Sequential(nn.Conv2d(in_channels=256, out_channels=256, kernel_size=2, stride=2, padding=0),
                                       FireRes(256, 48, 192, 192, bn_d=self.bn_d),
                                       FireRes(384, 48, 192, 192, bn_d=self.bn_d),
                                       FireRes(384, 64, 256, 256, bn_d=self.bn_d),
