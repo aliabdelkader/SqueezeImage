@@ -59,7 +59,7 @@ class CityscapesDataset(Dataset):
         # numpy image: H x W x C
         # torch image: C X H X W
 
-        image = image.transpose((2, 0, 1))
+        # image = image.transpose((2, 0, 1))
         return image
 
     def __getitem__(self, idx):
@@ -69,7 +69,7 @@ class CityscapesDataset(Dataset):
         image = image.astype(np.float32)
         if self.has_labels:
             target = self.load_target(filename)
-            target = target.astype(np.int64).squeeze()
+            target = target.astype(np.int64)
             return [torch.from_numpy(image), torch.from_numpy(target)]
         else:
             return [torch.from_numpy(image)]
