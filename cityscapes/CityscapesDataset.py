@@ -49,7 +49,7 @@ class CityscapesDataset(Dataset):
 
     def load_target(self, filename):
         image_path = self.dataset_root_dir / "gtFine" / (filename + "_gtFine_labelTrainIds.png")
-        image = cv2.imread(str(image_path), cv2.CV_LOAD_IMAGE_GRAYSCALE)
+        image = cv2.imread(str(image_path), cv2.IMREAD_GRAYSCALE)
         image = cv2.resize(image, dsize=(self.image_width, self.image_height))
 
         # if self.image_transforms:
