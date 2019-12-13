@@ -48,7 +48,7 @@ class CityscapesDataset(Dataset):
         return image
 
     def load_target(self, filename):
-        image_path = self.dataset_root_dir / "gtFine" / (filename + "_gtFine_color.png")
+        image_path = self.dataset_root_dir / "gtFine" / (filename + "_labelTrainIds.png")
         image = cv2.imread(str(image_path))
         image = cv2.resize(image, dsize=(self.image_width, self.image_height))
 
