@@ -10,7 +10,7 @@ from torch.utils.data import DataLoader
 import torch
 import yaml
 import argparse
-import numpy as np
+
 
 
 def get_filenames(filenames_path):
@@ -101,10 +101,10 @@ if model_name == "SqueezeImage":
     model = SqueezeImage(num_classes=output_classes)
 
 optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
-loss_weights = np.ones((len(dataset_config["class_map"].keys())))
+loss_weights = torch.ones((len(dataset_config["class_map"].keys())))
 loss_weights[0] = 0
 loss_fn = nn.NLLLoss(weight=loss_weights)  # nn.CrossEntropyLoss()
-
+loss_fn = loss_fn.to(device)
 
 trainer = CityscapesTrainer(model=model,
                             loss_fn=loss_fn,
