@@ -37,7 +37,7 @@ class CityscapesTrainer:
 
         # log model once
         images, labels = next(iter(trainloader))
-        logger.add_graph(model=model, input=[images, labels])
+        logger.add_graph(model=model, input=images)
 
     def train_epoch(self):
         losses = []
