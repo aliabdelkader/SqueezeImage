@@ -1,6 +1,6 @@
 #!/bin/bash
 # export CUDA_LAUNCH_BLOCKING="1"
-export CUDA_VISIBLE_DEVICES="0"
+export CUDA_VISIBLE_DEVICES="7"
 export model_name="SqueezeImage"
 python main.py \
 --model_name "${model_name}" \
