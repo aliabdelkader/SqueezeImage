@@ -137,6 +137,8 @@ class Encoder(nn.Module):
         self.bn_d = bn_d
         self.drop_prob = drop_prob
 
+        # last channels
+        self.last_channels = 512
 
         # encoder
         self.fire23 = nn.Sequential(nn.Conv2d(in_channels=64, out_channels=64, kernel_size=2, stride=2, padding=1),
@@ -154,8 +156,7 @@ class Encoder(nn.Module):
         # output
         self.dropout = nn.Dropout2d(self.drop_prob)
 
-        # last channels
-        self.last_channels = 512
+
 
     def run_layer(self, x, layer, skips, os):
         y = layer(x)
@@ -197,7 +198,7 @@ class SqueezeImage(nn.Module):
 
         self.encoder = Encoder(bn_d=0.1, drop_prob=0.3)
 
-        self.decoder = Decoder(OS=8, bn_d=0.1, drop_prob=0.3)
+        self.decoder = Decoder(encoder_feature_depth=self.encoder.last_channels, OS=8, bn_d=0.1, drop_prob=0.3)
 
         self.exit_flow = nn.Sequential(
             nn.Conv2d(64, self.num_classes, kernel_size=1),
