@@ -212,10 +212,3 @@ class SqueezeImage(nn.Module):
         x = self.exit_flow(x)
         return x
 
-    def save(self, saving_dir="results", best=False):
-
-        saving_path = os.path.join(saving_dir, "{}.pth")
-        if best:
-            torch.save(self.state_dict(), saving_path.format("best"))
-        else:
-            torch.save(self.state_dict(), saving_path.format("model"))

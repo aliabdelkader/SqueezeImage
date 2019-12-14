@@ -3,12 +3,21 @@ script to create train, val, test images
 expected dataset folder tree
 
 + cityscapes
+    + gtCoarse
+        + train
+        + train_extra
+        + val
     + gFine
         + train
         + test
         + val
             + city
                 + *_labelTrainIds
+    + LeftImage
+        + test
+        + train
+        + train_extra
+        + val
 """
 
 import argparse
@@ -24,17 +33,24 @@ def create_imageset(annotations_path: Path, imageset_name: str) -> list:
         annotations_path: path to annontation files i.e cityscapes/gFine
         imageset_name: imageset name i.e: train
 
+        {root}/{type}{video}/{split}/{city}/{city}_{seq:0>6}_{frame:0>6}_{type}{ext}
+
     Returns:
         list of filenames
     """
     imageset = []
-    annotation_images_path = (annotations_path / imageset_name).rglob("*_gtFine_labelTrainIds.png")
+    annotation_images_path = (annotations_path / imageset_name).rglob("*_labelTrainIds.png")
     for annotation_image_path in tqdm(annotation_images_path, "processing imageset {}".format(imageset_name)):
-        annotation_image_name = annotation_image_path.stem.replace("_gtFine_labelTrainIds", "")
-        annotation_image_name_splitted = annotation_image_name.split("_")
-        city = annotation_image_name_splitted[0]
-        filename_in_imageset_name = "{}/{}/{}".format(imageset_name, city, annotation_image_name)
-        imageset.append(filename_in_imageset_name)
+        # annotation_image_name = annotation_image_path.stem.replace("_gtFine_labelTrainIds", "")
+        city = annotation_images_path.parent.stem
+        split = annotation_images_path.parent.parent.stem
+        type = annotation_images_path.parent.parent.parent.stem
+        print(annotation_image_path, "city: ", city, "split: ", split, "type: ", type)
+        break
+        # annotation_image_name_splitted = annotation_image_name.split("_")
+        # city = annotation_image_name_splitted[0]
+        # filename_in_imageset_name = "{}/{}/{}".format(imageset_name, city, annotation_image_name)
+        # imageset.append(filename_in_imageset_name)
     return imageset
 
 
