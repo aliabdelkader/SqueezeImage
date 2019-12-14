@@ -59,10 +59,10 @@ class CityscapesTrainer:
 
             self.optimizer.step()
 
-            _, predicted = torch.max(output.data, 1)
-            y_true = train_label.cpu().detach().numpy().squeeze().reshape(-1)
-            y_pred = predicted.cpu().detach().numpy().squeeze().reshape(-1)
-            self.train_confusion_matrix.update_confusion_matrix(y_true=y_true, y_pred=y_pred)
+            # _, predicted = torch.max(output.data, 1)
+            # y_true = train_label.cpu().detach().numpy().squeeze().reshape(-1)
+            # y_pred = predicted.cpu().detach().numpy().squeeze().reshape(-1)
+            # self.train_confusion_matrix.update_confusion_matrix(y_true=y_true, y_pred=y_pred)
 
         loss = np.mean(losses)
         return loss
