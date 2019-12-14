@@ -69,14 +69,13 @@ class CityscapesDataset(Dataset):
     def __getitem__(self, idx):
 
         filename = self.filenames[idx]
-        image = self.load_input_image(filename).astype(np.float32)
+        image = self.load_input_image(filename)
         if self.has_labels:
             target = self.load_target(filename)
-            target = target.astype(np.int64)
             transformed = self.image_transforms(image=image, mask=target)
-            image, target = transformed["image"], transformed["mask"]
+            image, target = transformed["image"].type(torch.DoubleTensor), transformed["mask"].type(torch.LongTensor)
             return [image, target]
         else:
             transformed = self.image_transforms(image=image)
-            image, target = transformed["image"], transformed["mask"]
+            image = transformed["image"].type(torch.DoubleTensor)
             return [image]
