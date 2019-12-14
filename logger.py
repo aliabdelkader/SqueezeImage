@@ -11,19 +11,19 @@ class Logger:
 
     def add_scalers(self, scope, scalers, step):
         self.writer.add_scalars(scope, scalers, global_step=step)
-        self.writer.flush()
+        # self.writer.flush()
 
     def add_scaler(self, scope, tag, value, step):
         self.writer.add_scalar(tag=scope + '/' + tag, scalar_value=value, global_step=step)
-        self.writer.flush()
+        # self.writer.flush()
 
     def add_graph(self, model, input):
         self.writer.add_graph(model, input)
-        self.writer.flush()
+        # self.writer.flush()
 
     def add_image(self, tag, image_tensor):
         self.writer.add_image(tag=tag, img_tensor=image_tensor)
-        self.writer.flush()
+        # self.writer.flush()
 
     def add_metrics(self, metrics_calcuator: MetricsCalculator, step=0):
         """
