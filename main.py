@@ -75,10 +75,12 @@ results_dir.mkdir(parents=True, exist_ok=True)
 logging_dir.mkdir(parents=True, exist_ok=True)
 
 
-
-trainset = get_filenames(imageset_path / "train.txt")
-valset = get_filenames(imageset_path / "val.txt")
-testset = get_filenames(imageset_path / "test.txt")
+trainset = get_filenames(imageset_path / "simple.txt")
+valset = get_filenames(imageset_path / "simple.txt")
+testset = get_filenames(imageset_path / "simple.txt")
+# trainset = get_filenames(imageset_path / "train.txt")
+# valset = get_filenames(imageset_path / "val.txt")
+# testset = get_filenames(imageset_path / "test.txt")
 
 dataset_config = yaml.safe_load(open(str(dataset_config_path), 'r'))
 

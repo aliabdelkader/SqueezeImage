@@ -11,7 +11,7 @@ python main.py \
 --results_dir "results/${model_name}" \
 --learning_rate "0.001" \
 --number_epochs "100" \
---image_height "256" \
---image_width "512" \
+--image_height "512" \
+--image_width "1024" \
 --output_classes "20" \
 --device "cuda"
