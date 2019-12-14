@@ -73,9 +73,9 @@ class CityscapesDataset(Dataset):
         if self.has_labels:
             target = self.load_target(filename)
             transformed = self.image_transforms(image=image, mask=target)
-            image, target = transformed["image"].type(torch.DoubleTensor), transformed["mask"].type(torch.LongTensor)
+            image, target = transformed["image"].type(torch.FloatTensor), transformed["mask"].type(torch.LongTensor)
             return [image, target]
         else:
             transformed = self.image_transforms(image=image)
-            image = transformed["image"].type(torch.DoubleTensor)
+            image = transformed["image"].type(torch.FloatTensor)
             return [image]
