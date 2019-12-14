@@ -69,18 +69,14 @@ class CityscapesDataset(Dataset):
     def __getitem__(self, idx):
 
         filename = self.filenames[idx]
-        try:
-            image = self.load_input_image(filename).astype(np.float32)
-
-            if self.has_labels:
-                target = self.load_target(filename)
-                target = target.astype(np.int64)
-                transformed = self.image_transforms(image=image, mask=target)
-                image, target = transformed["image"], transformed["mask"]
-                return [image, target]
-            else:
-                transformed = self.image_transforms(image=image)
-                image, target = transformed["image"], transformed["mask"]
-                return [image]
-        except:
-            print(filename)
+        image = self.load_input_image(filename).astype(np.float32)
+        if self.has_labels:
+            target = self.load_target(filename)
+            target = target.astype(np.int64)
+            transformed = self.image_transforms(image=image, mask=target)
+            image, target = transformed["image"], transformed["mask"]
+            return [image, target]
+        else:
+            transformed = self.image_transforms(image=image)
+            image, target = transformed["image"], transformed["mask"]
+            return [image]
