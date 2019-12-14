@@ -109,7 +109,7 @@ if num_gpus > 1:
 model = model.to(device)
 
 optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
-loss_weights = torch.ones((len(dataset_config["class_map"].keys())))
+loss_weights = torch.ones((output_classes)) / (output_classes - 1)
 loss_weights[0] = 0
 loss_fn = nn.NLLLoss(weight=loss_weights)  # nn.CrossEntropyLoss()
 
