@@ -86,7 +86,7 @@ testset = get_filenames(imageset_path / "test.txt")
 dataset_config = yaml.safe_load(open(str(dataset_config_path), 'r'))
 
 train_dataset = CityscapesDataset(dataset_root_dir=dataset_root_path, filenames=trainset, has_labels=True,
-                                  image_height=image_height, image_width=image_width)
+                                  image_height=image_height, image_width=image_width, augmentation=True)
 val_dataset = CityscapesDataset(dataset_root_dir=dataset_root_path, filenames=valset, has_labels=True,
                                 image_height=image_height, image_width=image_width)
 test_dataset = CityscapesDataset(dataset_root_dir=dataset_root_path, filenames=testset, has_labels=True,
