@@ -45,9 +45,10 @@ def create_imageset(annotations_path: Path, imageset_name: str) -> list:
         city = annotation_image_path.parent.stem
         split = annotation_image_path.parent.parent.stem
         type = annotation_image_path.parent.parent.parent.stem
-        print(annotation_image_path, "city: ", city, "split: ", split, "type: ", type)
-        break
-        # annotation_image_name_splitted = annotation_image_name.split("_")
+
+        annotation_image_name_splitted = annotation_image_path.stem.split("_")
+        print(annotation_image_path, "city: ", city, "split: ", split, "type: ", type, "frame: ", annotation_image_name_splitted[1] + '_' +annotation_image_name_splitted[2] )
+
         # city = annotation_image_name_splitted[0]
         # filename_in_imageset_name = "{}/{}/{}".format(imageset_name, city, annotation_image_name)
         # imageset.append(filename_in_imageset_name)
