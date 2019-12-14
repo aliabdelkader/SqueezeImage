@@ -46,7 +46,7 @@ class CityscapesDataset(Dataset):
 
     def get_image_path(self, filename):
         # berlin_000108_000019_leftImg8bit
-        split, city, frame, type = filename.split('-')
+        split, city, frame, type = filename.split('@')
         return self.dataset_root_dir / "leftImg8bit" / split / city / "{c}_{f}_leftImg8bit.png".format(c=city, f=frame)
 
     def load_input_image(self, filename):
@@ -57,7 +57,7 @@ class CityscapesDataset(Dataset):
         return image
 
     def get_target_path(self, filename):
-        split, city, frame, type = filename.split('-')
+        split, city, frame, type = filename.split('@')
         return self.dataset_root_dir / type / split / city / "{c}_{f}_{t}_labelTrainIds.png".format(c=city, f=frame, t=type)
 
     def load_target(self, filename):
