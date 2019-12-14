@@ -41,7 +41,7 @@ class CityscapesTrainer:
 
     def save_model(self, epoch, best=False):
 
-        saving_path = os.path.join(self.results_dir, "{}_[}.pth")
+        saving_path = os.path.join(self.results_dir, "{}_{}.pth")
         if best:
             torch.save(self.model.module.state_dict(), saving_path.format("best", epoch))
         else:
