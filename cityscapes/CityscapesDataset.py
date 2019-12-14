@@ -58,7 +58,7 @@ class CityscapesDataset(Dataset):
 
     def get_target_path(self, filename):
         split, city, frame, type = filename.split('-')
-        return self.dataset_root_dir / type / split / city / "{c}_{f}_{t}.png".format(c=city, f=frame, t=type)
+        return self.dataset_root_dir / type / split / city / "{c}_{f}_{t}_labelTrainIds.png".format(c=city, f=frame, t=type)
 
     def load_target(self, filename):
         target_path = self.get_target_path(filename)
