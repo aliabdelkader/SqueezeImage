@@ -92,8 +92,8 @@ val_dataset = CityscapesDataset(dataset_root_dir=dataset_root_path, filenames=va
 test_dataset = CityscapesDataset(dataset_root_dir=dataset_root_path, filenames=testset, has_labels=True,
                                  image_height=image_height, image_width=image_width)
 
-train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-val_dataloader = DataLoader(val_dataset, batch_size=batch_size)
+train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=4)
+val_dataloader = DataLoader(val_dataset, batch_size=batch_size, num_workers=4)
 test_dataloader = DataLoader(test_dataset, batch_size=1)
 
 logger = Logger(logging_dir=str(logging_dir))
