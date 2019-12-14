@@ -45,13 +45,9 @@ def create_imageset(annotations_path: Path, imageset_name: str) -> list:
         city = annotation_image_path.parent.stem
         split = annotation_image_path.parent.parent.stem
         type = annotation_image_path.parent.parent.parent.stem
-
         annotation_image_name_splitted = annotation_image_path.stem.split("_")
-        print(annotation_image_path, "city: ", city, "split: ", split, "type: ", type, "frame: ", annotation_image_name_splitted[1] + '_' +annotation_image_name_splitted[2] )
-
-        # city = annotation_image_name_splitted[0]
-        # filename_in_imageset_name = "{}/{}/{}".format(imageset_name, city, annotation_image_name)
-        # imageset.append(filename_in_imageset_name)
+        filename_in_imageset_name = "{s}_{c}_{fa}_{fb}_{t}".format(s=split, c=city, fa=annotation_image_name_splitted[1], fb=annotation_image_name_splitted[2], t=type)
+        imageset.append(filename_in_imageset_name)
     return imageset
 
 
@@ -81,13 +77,17 @@ def main():
     output_dir = Path(args.output_dir)
 
     gFine_path = dataset_root / "gtFine"
+    gtCorse_path = dataset_root / "gtCoarse"
     output_dir.mkdir(parents=True, exist_ok=True)
 
     # list of train, val, test file sets
     trainset = create_imageset(gFine_path, "train")
+    trainset.extend(create_imageset(gtCorse_path, "train"))
+    trainset.extend(create_imageset(gtCorse_path, "train_extra"))
     write_imageset_disk(output=output_dir, imageset_name="train", imageset=trainset)
 
     valset = create_imageset(gFine_path, "val")
+    valset.extend(create_imageset(gtCorse_path, "val"))
     write_imageset_disk(output=output_dir, imageset_name="val", imageset=valset)
 
     testset = create_imageset(gFine_path, "test")
