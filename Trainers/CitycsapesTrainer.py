@@ -9,7 +9,7 @@ import os
 class CityscapesTrainer:
 
     def __init__(self, model, loss_fn, optimizer, trainloader, validloader, num_epochs, device="cpu",
-                 results_dir="results", logger=None, class_map=None, saving_dir="results"):
+                 results_dir="results", logger=None, class_map=None):
         """
         constructor for trainer class
         :param model: pytorch model to be trained
@@ -34,7 +34,6 @@ class CityscapesTrainer:
         self.validation_confusion_matrix = MetricsCalculator(class_map=self.class_map)
         self.train_confusion_matrix = MetricsCalculator(class_map=self.class_map)
         self.scheduler = ReduceLROnPlateau(self.optimizer, mode='max', factor=0.1, patience=1, verbose=True)
-        self.saving_dir = saving_dir
 
         # # log model once
         # images, labels = next(iter(trainloader))
@@ -42,11 +41,11 @@ class CityscapesTrainer:
 
     def save_model(self, epoch, best=False):
 
-        saving_path = os.path.join(self.saving_dir, "{}_[}.pth")
+        saving_path = os.path.join(self.results_dir, "{}_[}.pth")
         if best:
-            torch.save(self.model.state_dict(), saving_path.format("best", epoch))
+            torch.save(self.model.module.state_dict(), saving_path.format("best", epoch))
         else:
-            torch.save(self.model.state_dict(), saving_path.format("model", epoch))
+            torch.save(self.model.module.state_dict(), saving_path.format("model", epoch))
 
 
     def train_epoch(self):
