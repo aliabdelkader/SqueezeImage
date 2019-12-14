@@ -91,7 +91,6 @@ class CityscapesTrainer:
 
     def train(self):
 
-        self.model = self.model.to(self.device)
         best_preformance = 0
         for i in range(self.num_epochs):
 

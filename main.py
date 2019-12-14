@@ -33,7 +33,7 @@ parser.add_argument('--weight_decay', default='1e-5')
 parser.add_argument('--number_epochs', default='100')
 parser.add_argument('--device', default='cuda')
 parser.add_argument('--train_flag', default='1')
-
+parser.add_argument('--num_gpus', default='1')
 # input
 parser.add_argument('--image_height', default='512')
 parser.add_argument('--image_width', default='1024')
@@ -59,6 +59,7 @@ weight_decay = float(args.weight_decay)
 number_epochs = int(args.number_epochs)
 train_flag = int(args.train_flag)
 device = args.device
+num_gpus = int(args.num_gpus)
 
 
 # input
@@ -97,15 +98,21 @@ test_dataloader = DataLoader(test_dataset, batch_size=1)
 
 logger = Logger(logging_dir=str(logging_dir))
 
-print("training model: ", model_name)
+
 model = None
 if model_name == "SqueezeImage":
     model = SqueezeImage(num_classes=output_classes)
+print("training model: ", model_name)
 print(model)
+if num_gpus > 1:
+    model = nn.DataParallel(model)
+model = model.to(device)
+
 optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
 loss_weights = torch.ones((len(dataset_config["class_map"].keys())))
 loss_weights[0] = 0
 loss_fn = nn.NLLLoss(weight=loss_weights)  # nn.CrossEntropyLoss()
+
 loss_fn = loss_fn.to(device)
 
 trainer = CityscapesTrainer(model=model,
