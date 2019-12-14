@@ -49,7 +49,7 @@ class CityscapesTrainer:
             self.optimizer.zero_grad()  # clear previous gradients
 
             output = self.model(image=train_image)
-            print("output shape: ", output.shape, "image shape: ", train_image.size(), "target shape: ", train_label.size())
+            # print("output shape: ", output.shape, "image shape: ", train_image.size(), "target shape: ", train_label.size())
 
             loss = self.loss_fn(output, train_label)
 
