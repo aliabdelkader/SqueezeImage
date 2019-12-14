@@ -42,9 +42,9 @@ def create_imageset(annotations_path: Path, imageset_name: str) -> list:
     annotation_images_path = (annotations_path / imageset_name).rglob("*_labelTrainIds.png")
     for annotation_image_path in tqdm(annotation_images_path, "processing imageset {}".format(imageset_name)):
         # annotation_image_name = annotation_image_path.stem.replace("_gtFine_labelTrainIds", "")
-        city = annotation_images_path.parent.stem
-        split = annotation_images_path.parent.parent.stem
-        type = annotation_images_path.parent.parent.parent.stem
+        city = annotation_image_path.parent.stem
+        split = annotation_image_path.parent.parent.stem
+        type = annotation_image_path.parent.parent.parent.stem
         print(annotation_image_path, "city: ", city, "split: ", split, "type: ", type)
         break
         # annotation_image_name_splitted = annotation_image_name.split("_")
