@@ -46,7 +46,7 @@ def create_imageset(annotations_path: Path, imageset_name: str) -> list:
         split = annotation_image_path.parent.parent.stem
         type = annotation_image_path.parent.parent.parent.stem
         annotation_image_name_splitted = annotation_image_path.stem.split("_")
-        filename_in_imageset_name = "{s}-{c}-{fa}_{fb}-{t}".format(s=split, c=city, fa=annotation_image_name_splitted[1], fb=annotation_image_name_splitted[2], t=type)
+        filename_in_imageset_name = "{s}@{c}@{fa}_{fb}@{t}".format(s=split, c=city, fa=annotation_image_name_splitted[1], fb=annotation_image_name_splitted[2], t=type)
         imageset.append(filename_in_imageset_name)
     return imageset
 
