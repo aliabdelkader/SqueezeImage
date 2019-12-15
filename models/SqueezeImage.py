@@ -144,10 +144,14 @@ class Encoder(nn.Module):
         self.fire23 = nn.Sequential(nn.Conv2d(in_channels=64, out_channels=64, kernel_size=2, stride=2, padding=0),
                                     FireRes(64, 16, 64, 64, bn_d=self.bn_d),
                                     FireRes(128, 16, 64, 64, bn_d=self.bn_d))
+
         self.fire45 = nn.Sequential(nn.Conv2d(in_channels=128, out_channels=128, kernel_size=2, stride=2, padding=0),
+                                    FireRes(128, 16, 64, 64, bn_d=self.bn_d),
+                                    FireRes(128, 16, 64, 64, bn_d=self.bn_d))
+        self.fire67 = nn.Sequential(nn.Conv2d(in_channels=128, out_channels=128, kernel_size=2, stride=2, padding=0),
                                     FireRes(128, 32, 128, 128, bn_d=self.bn_d),
                                     FireRes(256, 32, 128, 128, bn_d=self.bn_d))
-        self.fire6789 = nn.Sequential(nn.Conv2d(in_channels=256, out_channels=256, kernel_size=2, stride=2, padding=0),
+        self.fir891011 = nn.Sequential(nn.Conv2d(in_channels=256, out_channels=256, kernel_size=2, stride=2, padding=0),
                                       FireRes(256, 48, 192, 192, bn_d=self.bn_d),
                                       FireRes(384, 48, 192, 192, bn_d=self.bn_d),
                                       FireRes(384, 64, 256, 256, bn_d=self.bn_d),
@@ -176,8 +180,11 @@ class Encoder(nn.Module):
         # x, skips, os = self.run_layer(x, self.dropout, skips, os)
         x, skips, os = self.run_layer(x, self.fire45, skips, os)
         x = self.dropout(x)
+
+        x, skips, os = self.run_layer(x, self.fire56, skips, os)
+        x = self.dropout(x)
         # x, skips, os = self.run_layer(x, self.dropout, skips, os)
-        x, skips, os = self.run_layer(x, self.fire6789, skips, os)
+        x, skips, os = self.run_layer(x, self.fire891011, skips, os)
         x = self.dropout(x)
         # x, skips, os = self.run_layer(x, self.dropout, skips, os)
 
@@ -198,7 +205,7 @@ class SqueezeImage(nn.Module):
 
         self.encoder = Encoder(bn_d=0.1, drop_prob=0.3)
 
-        self.decoder = Decoder(encoder_feature_depth=self.encoder.last_channels, OS=8, bn_d=0.1, drop_prob=0.3)
+        self.decoder = Decoder(encoder_feature_depth=self.encoder.last_channels, OS=16, bn_d=0.1, drop_prob=0.3)
 
         self.exit_flow = nn.Sequential(
             nn.Conv2d(64, self.num_classes, kernel_size=1),
