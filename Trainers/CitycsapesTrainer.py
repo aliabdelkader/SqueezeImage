@@ -1,5 +1,5 @@
 import torch
-from torch.optim.lr_scheduler import ReduceLROnPlateau
+from torch.optim.lr_scheduler import CosineAnnealingWarmRestarts
 from tqdm import tqdm
 import numpy as np
 from metric import MetricsCalculator
@@ -33,8 +33,8 @@ class CityscapesTrainer:
         self.class_map = class_map
         self.validation_confusion_matrix = MetricsCalculator(class_map=self.class_map)
         self.train_confusion_matrix = MetricsCalculator(class_map=self.class_map)
-        self.scheduler = ReduceLROnPlateau(self.optimizer, mode='max', factor=0.1, patience=1, verbose=True)
-
+        # self.scheduler = ReduceLROnPlateau(self.optimizer, mode='max', factor=0.1, patience=1, verbose=True)
+        self.scheduler = CosineAnnealingWarmRestarts(self.optimizer, T_0=10)
         # # log model once
         # images, labels = next(iter(trainloader))
         # logger.add_graph(model=model, input=images)
@@ -110,7 +110,8 @@ class CityscapesTrainer:
             self.model.eval()
             val_loss = self.val_epoch()
             val_miou = self.validation_confusion_matrix.calculate_average_iou()
-            self.scheduler.step(val_miou)
+            self.scheduler.step()
+            # self.scheduler.step(val_miou)
             if val_miou > best_preformance:
                 best_preformance = val_miou
                 print("best performance {} saving model".format(best_preformance))
@@ -127,3 +128,4 @@ class CityscapesTrainer:
                                         scalers={" training loss": train_loss, " validation loss": val_loss}, step=epoch)
                 self.logger.add_scalers(scope="miou",
                                         scalers={" validation miou": val_miou}, step=epoch)
+                self.logger.add_scaler(scope='training', tag='learning rate', value=self.scheduler.get_lr())
