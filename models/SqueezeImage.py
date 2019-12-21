@@ -91,10 +91,11 @@ class Decoder(nn.Module):
 
         # decoder
         # decoder
-        self.firedec10 = FireUp(encoder_feature_depth, 64, 128, 128, bn_d=bn_d)
-        self.firedec11 = FireUp(256, 32, 64, 64, bn_d=bn_d, )
-        self.firedec12 = FireUp(128, 16, 64, 64, bn_d=bn_d)
-        self.firedec13 = FireUp(128, 16, 32, 32, bn_d=bn_d)
+        self.firedec1 = FireUp(encoder_feature_depth, 64, 128, 128, bn_d=bn_d)
+        self.firedec2 = FireUp(256, 32, 64, 64, bn_d=bn_d)
+        self.firedec3 = FireUp(128, 32, 64, 64, bn_d=bn_d)
+        self.firedec4 = FireUp(128, 16, 64, 64, bn_d=bn_d)
+        self.firedec5 = FireUp(128, 16, 32, 32, bn_d=bn_d)
 
         self.dropout = nn.Dropout2d(drop_prob)
 
@@ -113,10 +114,11 @@ class Decoder(nn.Module):
         os = self.OS
 
         # run layers
-        x, skips, os = self.run_layer(x, self.firedec10, skips, os)
-        x, skips, os = self.run_layer(x, self.firedec11, skips, os)
-        x, skips, os = self.run_layer(x, self.firedec12, skips, os)
-        x, skips, os = self.run_layer(x, self.firedec13, skips, os)
+        x, skips, os = self.run_layer(x, self.firedec1, skips, os)
+        x, skips, os = self.run_layer(x, self.firedec2, skips, os)
+        x, skips, os = self.run_layer(x, self.firedec3, skips, os)
+        x, skips, os = self.run_layer(x, self.firedec4, skips, os)
+        x, skips, os = self.run_layer(x, self.firedec5, skips, os)
 
         x = self.dropout(x)
 
@@ -141,21 +143,24 @@ class Encoder(nn.Module):
         self.last_channels = 512
 
         # encoder
-        self.fire23 = nn.Sequential(nn.Conv2d(in_channels=64, out_channels=64, kernel_size=2, stride=2, padding=0),
-                                    FireRes(64, 16, 64, 64, bn_d=self.bn_d),
-                                    FireRes(128, 16, 64, 64, bn_d=self.bn_d))
+        self.fire1 = nn.Sequential(nn.Conv2d(in_channels=64, out_channels=64, kernel_size=2, stride=2, padding=0),
+                                   FireRes(64, 16, 64, 64, bn_d=self.bn_d),
+                                   FireRes(128, 16, 64, 64, bn_d=self.bn_d))
 
-        self.fire45 = nn.Sequential(nn.Conv2d(in_channels=128, out_channels=128, kernel_size=2, stride=2, padding=0),
-                                    FireRes(128, 16, 64, 64, bn_d=self.bn_d),
-                                    FireRes(128, 16, 64, 64, bn_d=self.bn_d))
-        self.fire67 = nn.Sequential(nn.Conv2d(in_channels=128, out_channels=128, kernel_size=2, stride=2, padding=0),
-                                    FireRes(128, 32, 128, 128, bn_d=self.bn_d),
-                                    FireRes(256, 32, 128, 128, bn_d=self.bn_d))
-        self.fire891011 = nn.Sequential(nn.Conv2d(in_channels=256, out_channels=256, kernel_size=2, stride=2, padding=0),
-                                      FireRes(256, 48, 192, 192, bn_d=self.bn_d),
-                                      FireRes(384, 48, 192, 192, bn_d=self.bn_d),
-                                      FireRes(384, 64, 256, 256, bn_d=self.bn_d),
-                                      FireRes(512, 64, 256, 256, bn_d=self.bn_d))
+        self.fire2 = nn.Sequential(nn.Conv2d(in_channels=128, out_channels=128, kernel_size=2, stride=2, padding=0),
+                                   FireRes(128, 16, 64, 64, bn_d=self.bn_d),
+                                   FireRes(128, 16, 64, 64, bn_d=self.bn_d))
+        self.fire3 = nn.Sequential(nn.Conv2d(in_channels=128, out_channels=128, kernel_size=2, stride=2, padding=0),
+                                   FireRes(128, 16, 64, 64, bn_d=self.bn_d),
+                                   FireRes(128, 16, 64, 64, bn_d=self.bn_d))
+        self.fire4 = nn.Sequential(nn.Conv2d(in_channels=128, out_channels=128, kernel_size=2, stride=2, padding=0),
+                                   FireRes(128, 32, 128, 128, bn_d=self.bn_d),
+                                   FireRes(256, 32, 128, 128, bn_d=self.bn_d))
+        self.fire5 = nn.Sequential(nn.Conv2d(in_channels=256, out_channels=256, kernel_size=2, stride=2, padding=0),
+                                   FireRes(256, 48, 192, 192, bn_d=self.bn_d),
+                                   FireRes(384, 48, 192, 192, bn_d=self.bn_d),
+                                   FireRes(384, 64, 256, 256, bn_d=self.bn_d),
+                                   FireRes(512, 64, 256, 256, bn_d=self.bn_d))
 
         # output
         self.dropout = nn.Dropout2d(self.drop_prob)
@@ -175,19 +180,20 @@ class Encoder(nn.Module):
         skips = {}
         os = 1
 
-        x, skips, os = self.run_layer(x, self.fire23, skips, os)
+        x, skips, os = self.run_layer(x, self.fire1, skips, os)
         x = self.dropout(x)
         # x, skips, os = self.run_layer(x, self.dropout, skips, os)
-        x, skips, os = self.run_layer(x, self.fire45, skips, os)
+        x, skips, os = self.run_layer(x, self.fire2, skips, os)
         x = self.dropout(x)
 
-        x, skips, os = self.run_layer(x, self.fire67, skips, os)
+        x, skips, os = self.run_layer(x, self.fire3, skips, os)
         x = self.dropout(x)
         # x, skips, os = self.run_layer(x, self.dropout, skips, os)
-        x, skips, os = self.run_layer(x, self.fire891011, skips, os)
+        x, skips, os = self.run_layer(x, self.fire4, skips, os)
         x = self.dropout(x)
         # x, skips, os = self.run_layer(x, self.dropout, skips, os)
-
+        x, skips, os = self.run_layer(x, self.fire5, skips, os)
+        x = self.dropout(x)
         return x, skips
 
 
@@ -205,7 +211,7 @@ class SqueezeImage(nn.Module):
 
         self.encoder = Encoder(bn_d=0.1, drop_prob=0.3)
 
-        self.decoder = Decoder(encoder_feature_depth=self.encoder.last_channels, OS=16, bn_d=0.1, drop_prob=0.3)
+        self.decoder = Decoder(encoder_feature_depth=self.encoder.last_channels, OS=32, bn_d=0.1, drop_prob=0.3)
 
         self.exit_flow = nn.Sequential(
             nn.Conv2d(64, self.num_classes, kernel_size=1),
