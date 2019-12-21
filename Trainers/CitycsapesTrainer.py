@@ -128,4 +128,4 @@ class CityscapesTrainer:
                                         scalers={" training loss": train_loss, " validation loss": val_loss}, step=epoch)
                 self.logger.add_scalers(scope="miou",
                                         scalers={" validation miou": val_miou}, step=epoch)
-                self.logger.add_scaler(scope='training', tag='learning rate', value=self.scheduler.get_lr(), step=epoch)
+                self.logger.add_scaler(scope='training', tag='learning rate', value=self.scheduler.get_lr()[-1], step=epoch)
