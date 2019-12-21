@@ -93,8 +93,8 @@ class Decoder(nn.Module):
         # decoder
         self.firedec10 = FireUp(encoder_feature_depth, 64, 128, 128, bn_d=bn_d)
         self.firedec11 = FireUp(256, 32, 64, 64, bn_d=bn_d, )
-        self.firedec12 = FireUp(128, 16, 32, 32, bn_d=bn_d)
-        # self.firedec13 = FireUp(64, 16, 32, 32, bn_d=bn_d)
+        self.firedec12 = FireUp(128, 16, 64, 64, bn_d=bn_d)
+        self.firedec13 = FireUp(128, 16, 32, 32, bn_d=bn_d)
 
         self.dropout = nn.Dropout2d(drop_prob)
 
@@ -116,7 +116,7 @@ class Decoder(nn.Module):
         x, skips, os = self.run_layer(x, self.firedec10, skips, os)
         x, skips, os = self.run_layer(x, self.firedec11, skips, os)
         x, skips, os = self.run_layer(x, self.firedec12, skips, os)
-        # x, skips, os = self.run_layer(x, self.firedec13, skips, os)
+        x, skips, os = self.run_layer(x, self.firedec13, skips, os)
 
         x = self.dropout(x)
 
