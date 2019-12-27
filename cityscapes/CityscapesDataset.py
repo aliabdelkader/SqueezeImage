@@ -69,6 +69,7 @@ class CityscapesDataset(Dataset):
     def __getitem__(self, idx):
 
         filename = self.filenames[idx]
+        print("filename :", filename)
         image = self.load_input_image(filename)
         if self.has_labels:
             target = self.load_target(filename)

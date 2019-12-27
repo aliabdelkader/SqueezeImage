@@ -89,7 +89,7 @@ class CityscapesTrainer:
 
                 losses.append(loss.cpu().detach().numpy())
 
-                _, predicted = torch.argmax(output.data, dim=1)
+                predicted = output.argmax(dim=1)
 
                 y_true = val_label.cpu().detach().numpy().squeeze().reshape(-1)
                 y_pred = predicted.cpu().detach().numpy().squeeze().reshape(-1)
