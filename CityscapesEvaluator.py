@@ -113,7 +113,7 @@ with torch.no_grad():
 
         output = model(image)
 
-        _, predicted = torch.argmax(output.data, dim=1)
+        predicted = output.argmax(dim=1)
 
         predicted_image = predicted.cpu().detach().numpy().transpose((1, 2, 0))
         y_pred = predicted.cpu().detach().numpy().squeeze().reshape(-1)
