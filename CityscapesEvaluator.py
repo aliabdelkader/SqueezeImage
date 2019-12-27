@@ -96,10 +96,10 @@ if model_path.exists():
     model.load_state_dict(torch.load(str(model_path)))
 
 # log model
-images, lidar, labels = next(iter(dataloader))
-logger.add_graph(model=model, input=[images, lidar])
+images, labels = next(iter(dataloader))
+logger.add_graph(model=model, input=images)
 
-confusion_matrix = MetricsCalculator(class_map=class_map)
+confusion_matrix = MetricsCalculator(class_map=dataset_config["class_map"])
 
 model = model.to(device)
 
