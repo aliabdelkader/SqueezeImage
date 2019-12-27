@@ -67,7 +67,7 @@ model_output.mkdir(parents=True, exist_ok=True)
 prediction_dir.mkdir(parents=True, exist_ok=True)
 ground_truth_dir.mkdir(parents=True, exist_ok=True)
 
-files_set = get_filenames(imageset_path)
+files_set = get_filenames(imageset_path / "test.txt")
 
 dataset_config = yaml.safe_load(open(str(dataset_config_path), 'r'))
 
