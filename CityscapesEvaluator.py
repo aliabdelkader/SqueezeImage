@@ -105,7 +105,7 @@ results = []
 model.eval()
 confusion_matrix.reset_confusion_matrix()
 with torch.no_grad():
-    for idx, sample in tqdm(list(enumerate(dataloader)), "testing loop"):
+    for idx, sample in tqdm(enumerate(dataloader), "testing loop"):
         # with labels
 
         image, label = sample
