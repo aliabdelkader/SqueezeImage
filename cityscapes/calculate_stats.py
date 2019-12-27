@@ -1,4 +1,4 @@
-from cityscapes.CityscapesDataset import CityscapesDataset
+from .CityscapesDataset import CityscapesDataset
 from pathlib import Path
 from torch.utils.data import DataLoader
 import torch
