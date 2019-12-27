@@ -70,8 +70,6 @@ ground_truth_dir.mkdir(parents=True, exist_ok=True)
 files_set = get_filenames(imageset_path)
 
 dataset_config = yaml.safe_load(open(str(dataset_config_path), 'r'))
-class_map = dataset_config["amr_class_map"]
-color_map = dataset_config["amr_color_map"]
 
 dataset = CityscapesDataset(dataset_root_dir=dataset_root_path, filenames=files_set, has_labels=True,
                             image_height=image_height,
@@ -130,3 +128,5 @@ with torch.no_grad():
 
 iou = confusion_matrix.calculate_average_iou()
 print("testing iou {}".format(iou))
+with open(str(logging_dir/"miou.txt"), 'w') as f:
+    f.write("miou {}".format(iou))

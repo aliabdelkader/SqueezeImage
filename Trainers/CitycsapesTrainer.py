@@ -45,7 +45,7 @@ class CityscapesTrainer:
         if best:
             torch.save(self.model.module.state_dict(), saving_path.format("best", epoch))
         else:
-            torch.save(self.model.module.state_dict(), saving_path.format("model", epoch))
+            torch.save(self.model.module.state_dict(), saving_path.format("model", ""))
 
 
     def train_epoch(self):
