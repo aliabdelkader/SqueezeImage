@@ -1,5 +1,5 @@
 #python create_imagesets.py --dataset_root "/mnt/sdb1/ali/cityscapes" --output_dir "/home/mrafaat/ali/SqueezeImage/cityscapes/imagesets"
-python calculate_stats.py \
+python cityscapes/calculate_stats.py \
 --dataset_root_path "/raid/ali/cityscapes" \
 --imageset_path "cityscapes/imagesets" \
 --dataset_config_path "cityscapes/cityscapes.yaml" \
