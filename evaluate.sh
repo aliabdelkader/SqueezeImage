@@ -7,7 +7,6 @@ python CityscapesEvaluator.py \
 --dataset_config_path "cityscapes/cityscapes.yaml" \
 --results_dir "/mnt/sdb1/ali/results/${model_name}" \
 --device "cuda" \
---number_epochs "100" \
 --image_height "512" \
 --image_width "1024" \
 --model_name "${model_name}" \
