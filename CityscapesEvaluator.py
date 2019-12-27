@@ -123,8 +123,7 @@ with torch.no_grad():
 
         if labels is not None:
             y_true = labels.cpu().detach().numpy().squeeze().reshape(-1)
-            print("labels: ", np.unique(y_true, return_counts=True))
-
+            
             confusion_matrix.update_confusion_matrix(y_true=y_true, y_pred=y_pred)
 
             ground_truth_image = labels.cpu().detach().numpy().transpose((1, 2, 0))
