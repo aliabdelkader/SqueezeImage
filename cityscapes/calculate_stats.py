@@ -1,4 +1,4 @@
-from .CityscapesDataset import CityscapesDataset
+from cityscapes.CityscapesDataset import CityscapesDataset
 from pathlib import Path
 from torch.utils.data import DataLoader
 import torch
@@ -32,7 +32,6 @@ args = parser.parse_args()
 
 # data
 dataset_root_path = Path(args.dataset_root_path)
-batch_size = int(args.batch_size)
 imageset_path = Path(args.imageset_path)
 dataset_config_path = Path(args.dataset_config_path)
 
