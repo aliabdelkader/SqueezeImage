@@ -4,11 +4,12 @@ import numpy as np
 from torch.utils.data import Dataset
 from pathlib import Path
 import cv2
-from albumentations import Compose, RandomCrop, Normalize, HorizontalFlip, Resize, ShiftScaleRotate
+from albumentations import Compose, HorizontalFlip, Resize, ShiftScaleRotate
 from albumentations.pytorch import ToTensorV2
 
+
 class CityscapesDataset(Dataset):
-    def __init__(self, dataset_root_dir: Path, filenames: list, augmentation=False, has_labels=True, image_width=256,
+    def __init__(self, dataset_root_dir: Path, filenames: list, augmentation=False, normalize_image=True, has_labels=True, image_width=256,
                  image_height=1024):
         """
         constructor for dataset class for semantic kitti
@@ -33,13 +34,13 @@ class CityscapesDataset(Dataset):
         ])
         if augmentation:
             self.image_transforms = Compose([
-                                    Resize(self.image_height, self.image_width),
-                                    HorizontalFlip(),
-                                    ShiftScaleRotate(),
-                                    ToTensorV2()
-                                ])
+                Resize(self.image_height, self.image_width),
+                HorizontalFlip(),
+                ShiftScaleRotate(),
+                ToTensorV2()
+            ])
 
-
+        self.normalize_image = normalize_image
 
     def __len__(self):
         return len(self.filenames)
@@ -53,12 +54,14 @@ class CityscapesDataset(Dataset):
         image_path = self.get_image_path(filename)
         image = cv2.imread(str(image_path))
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-
+        if self.normalize_image:
+            image = (image - image.mean()) / image.std()
         return image
 
     def get_target_path(self, filename):
         split, city, frame, type = filename.split('@')
-        return self.dataset_root_dir / type / split / city / "{c}_{f}_{t}_labelTrainIds.png".format(c=city, f=frame, t=type)
+        return self.dataset_root_dir / type / split / city / "{c}_{f}_{t}_labelTrainIds.png".format(c=city, f=frame,
+                                                                                                    t=type)
 
     def load_target(self, filename):
         target_path = self.get_target_path(filename)
