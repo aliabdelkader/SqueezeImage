@@ -108,14 +108,14 @@ with torch.no_grad():
     for idx, sample in tqdm(enumerate(dataloader), "testing loop"):
         # with labels
 
-        image, label = sample
-        image, label = image.to(device), label.to(device)
+        image, labels = sample
+        image, labels = image.to(device), labels.to(device)
 
         output = model(image)
 
-        _, predicted = torch.max(output.data, 1)
+        _, predicted = torch.argmax(output.data, dim=1)
 
-        predicted_image = predicted.cpu().detach().numpy().squeeze().transpose((1, 2, 0))
+        predicted_image = predicted.cpu().detach().numpy().transpose((1, 2, 0))
         y_pred = predicted.cpu().detach().numpy().squeeze().reshape(-1)
 
         cv2.imwrite(str(prediction_dir/"{}.png".format(idx)), predicted_image)
@@ -125,7 +125,7 @@ with torch.no_grad():
 
             confusion_matrix.update_confusion_matrix(y_true=y_true, y_pred=y_pred)
 
-            ground_truth_image = labels.cpu().detach().numpy().squeeze().transpose((1, 2, 0))
+            ground_truth_image = labels.cpu().detach().numpy().transpose((1, 2, 0))
 
             cv2.imwrite(str(ground_truth_dir / "{}.png".format(idx)), ground_truth_image)
 
