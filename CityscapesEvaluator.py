@@ -60,6 +60,12 @@ image_height = int(args.image_height)
 model_path = Path(args.model_path)
 output_classes = int(args.output_classes)
 
+if not dataset_root_path.exists():
+    raise ("dataset does not exists")
+
+if not model_path.exists():
+    raise ("pretrained model does not exits")
+
 # mkdirs
 results_dir.mkdir(parents=True, exist_ok=True)
 logging_dir.mkdir(parents=True, exist_ok=True)

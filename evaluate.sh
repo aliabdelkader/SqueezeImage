@@ -2,7 +2,7 @@
 export CUDA_VISIBLE_DEVICES="5"
 export model_name="SqueezeImage"
 sudo /home/mrafaat/anaconda3/envs/myenv/bin/python CityscapesEvaluator.py \
---dataset_root_path "/riad/ali/cityscapes" \
+--dataset_root_path "/raid/ali/cityscapes" \
 --imageset_path "cityscapes/imagesets" \
 --dataset_config_path "cityscapes/cityscapes.yaml" \
 --results_dir "/raid/ali/results/${model_name}" \
