@@ -57,7 +57,6 @@ output_classes = int(args.output_classes)
 results_dir.mkdir(parents=True, exist_ok=True)
 logging_dir.mkdir(parents=True, exist_ok=True)
 
-
 trainset = get_filenames(imageset_path / "train.txt")
 
 dataset_config = yaml.safe_load(open(str(dataset_config_path), 'r'))
@@ -69,7 +68,6 @@ train_dataset = CityscapesDataset(dataset_root_dir=dataset_root_path,
                                   image_width=image_width,
                                   augmentation=False,
                                   normalize_image=False)
-
 
 dataloader = DataLoader(train_dataset, batch_size=1)
 stats = torch.ones((output_classes))
