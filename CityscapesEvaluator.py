@@ -10,6 +10,7 @@ import yaml
 import argparse
 from tqdm import tqdm
 import cv2
+import numpy as np
 
 def get_filenames(filenames_path):
     with open(str(filenames_path), 'r') as f:
@@ -122,6 +123,7 @@ with torch.no_grad():
 
         if labels is not None:
             y_true = labels.cpu().detach().numpy().squeeze().reshape(-1)
+            print("labels: ", np.unique(y_true, return_counts=True))
 
             confusion_matrix.update_confusion_matrix(y_true=y_true, y_pred=y_pred)
 
