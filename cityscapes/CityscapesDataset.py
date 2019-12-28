@@ -53,6 +53,7 @@ class CityscapesDataset(Dataset):
     def load_input_image(self, filename):
         image_path = self.get_image_path(filename)
         image = cv2.imread(str(image_path))
+        print(image_path, image.shape)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         if self.normalize_image:
             image = (image - image.mean()) / image.std()
