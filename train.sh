@@ -10,7 +10,7 @@ python main.py \
 --imageset_path "cityscapes/imagesets" \
 --results_dir "results/${model_name}" \
 --learning_rate "0.001" \
---number_epochs "100" \
+--number_epochs "200" \
 --image_height "512" \
 --image_width "1024" \
 --output_classes "20" \

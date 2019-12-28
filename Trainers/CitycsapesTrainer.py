@@ -34,7 +34,7 @@ class CityscapesTrainer:
         self.validation_confusion_matrix = MetricsCalculator(class_map=self.class_map)
         self.train_confusion_matrix = MetricsCalculator(class_map=self.class_map)
         # self.scheduler = ReduceLROnPlateau(self.optimizer, mode='max', factor=0.1, patience=1, verbose=True)
-        self.scheduler = CosineAnnealingWarmRestarts(self.optimizer, T_0=10)
+        self.scheduler = CosineAnnealingWarmRestarts(self.optimizer, T_0=20)
         # # log model once
         # images, labels = next(iter(trainloader))
         # logger.add_graph(model=model, input=images)
