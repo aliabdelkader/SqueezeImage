@@ -76,7 +76,7 @@ for sample in (dataloader):
 for idx, c in enumerate(stats):
     print("class: {} counts {}".format(idx, c))
 
-scores = F.softmax(stats)
+scores = stats / stats.max()
 print("scores: ", scores)
 
 print("inverse: ", 1 - scores)
