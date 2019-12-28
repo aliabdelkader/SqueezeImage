@@ -42,3 +42,24 @@ class_map:
     "train": 17
     "motorcycle": 18
     "bicycle": 19
+class_loss_weights:
+    "None": 0
+    "road": 0.1518
+    "sidewalk": 0.9208
+    "building": 0.6530
+    "wall": 0.9861
+    "fence": 0.9808
+    "pole": 0.9870
+    "traffic_light": 0.9980
+    "traffic_sign": 0.9914
+    "vegetation": 0.7280
+    "terrain": 0.9812
+    "sky": 0.9202
+    "person": 0.9915
+    "rider": 0.9989
+    "car": 0.8740
+    "truck": 0.9971
+    "bus": 0.9963
+    "train": 0.9976
+    "motorcycle": 0.9993
+    "bicycle": 0.9970
