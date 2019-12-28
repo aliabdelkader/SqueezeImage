@@ -4,7 +4,7 @@ export CUDA_VISIBLE_DEVICES="4,5"
 export model_name="SqueezeImage"
 python main.py \
 --model_name "${model_name}" \
---dataset_root_path "/mnt/sdb1/ali/cityscapes" \
+--dataset_root_path "/raid/ali/cityscapes" \
 --dataset_config_path "cityscapes/cityscapes.yaml" \
 --batch_size 16 \
 --imageset_path "cityscapes/imagesets" \
