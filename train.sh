@@ -17,13 +17,13 @@
 #--device "cuda" \
 #--num_gpus "2"
 
-export CUDA_VISIBLE_DEVICES="0,1"
+export CUDA_VISIBLE_DEVICES="0,1,2"
 export model_name="SqueezeImage"
 python main.py \
 --model_name "${model_name}" \
 --dataset_root_path "/home/fusionresearch/Datasets/cityscapes" \
 --dataset_config_path "cityscapes/cityscapes.yaml" \
---batch_size 10 \
+--batch_size 12 \
 --imageset_path "cityscapes/imagesets" \
 --results_dir "results/${model_name}" \
 --learning_rate "0.001" \
