@@ -45,4 +45,4 @@ class SemanticKittiDataset(Dataset):
         image = self.load_input_image(filename)
         transformed = self.image_transforms(image=image)
         image = transformed["image"].type(torch.FloatTensor)
-        return [image, filename]
+        return image, filename
