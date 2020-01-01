@@ -23,7 +23,7 @@ class SemanticKittiDataset(Dataset):
         self.filenames = filenames
         self.normalize_image = normalize_image
         self.image_transforms = Compose([
-            Resize(image_crop),
+            Resize(image_crop[0], image_crop[1]),
             ToTensorV2()
         ])
 
