@@ -103,7 +103,7 @@ with torch.no_grad():
 
         image, filename = sample
         image = image.to(device)
-
+        print(image.size())
         output = model(image)
 
         predicted = output.argmax(dim=1)
