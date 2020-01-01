@@ -48,10 +48,6 @@ imageset_path = Path(args.imageset_path)
 
 # training
 results_dir = Path(args.results_dir)
-logging_dir = results_dir / "logs"
-model_output = results_dir / "model_output"
-prediction_dir = model_output / "preds"
-ground_truth_dir = model_output / "ground_truth"
 device = args.device
 
 # input
@@ -69,10 +65,7 @@ if not model_path.exists():
 
 # mkdirs
 results_dir.mkdir(parents=True, exist_ok=True)
-logging_dir.mkdir(parents=True, exist_ok=True)
-model_output.mkdir(parents=True, exist_ok=True)
-prediction_dir.mkdir(parents=True, exist_ok=True)
-ground_truth_dir.mkdir(parents=True, exist_ok=True)
+
 
 files_set = get_filenames(imageset_path / "all.txt")
 
@@ -80,7 +73,7 @@ dataset = SemanticKittiDataset(dataset_root_dir=dataset_root_path, filenames=fil
 
 dataloader = DataLoader(dataset, batch_size=1)
 
-logger = Logger(logging_dir=str(logging_dir))
+
 
 print("evaluating model: ", model_name)
 
@@ -101,8 +94,8 @@ with torch.no_grad():
     for idx, sample in tqdm(enumerate(dataloader), "testing loop"):
         # with labels
 
-        image, labels, filename = sample
-        image, labels = image.to(device), labels.to(device)
+        image, filename = sample
+        image = image.to(device)
 
         output = model(image)
 
@@ -110,11 +103,5 @@ with torch.no_grad():
 
         predicted_image = predicted.cpu().detach().numpy().transpose((1, 2, 0))
 
-        save_path = get_save_path(prediction_dir, filename)
+        save_path = get_save_path(results_dir, filename)
         cv2.imwrite(save_path, predicted_image)
-
-        if labels is not None:
-            ground_truth_image = labels.cpu().detach().numpy().transpose((1, 2, 0))
-
-            save_path = get_save_path(ground_truth_dir, filename, "ground_truth")
-            cv2.imwrite(save_path, ground_truth_image)
