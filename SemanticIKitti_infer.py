@@ -105,8 +105,8 @@ with torch.no_grad():
 
         predicted = output.argmax(dim=1)
 
-        predicted_image = predicted.cpu().detach().numpy().transpose((1, 2, 0))
+        predicted_image = predicted.cpu().detach().numpy().transpose((1, 2, 0)).astype('float32')
 
-        cv2.resize(predicted_image, dsize=(image_height, image_width))
+        predicted_image = cv2.resize(predicted_image, dsize=(image_height, image_width))
         save_path = get_save_path(results_dir, filename)
-        cv2.imwrite(save_path, predicted_image)
+        cv2.imwrite(save_path, predicted_image.astype(np.uint8))
