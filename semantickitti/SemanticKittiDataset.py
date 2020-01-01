@@ -3,12 +3,12 @@ import torch
 from torch.utils.data import Dataset
 from pathlib import Path
 import cv2
-from albumentations import Compose
+from albumentations import Compose, Resize
 from albumentations.pytorch import ToTensorV2
 
 
 class SemanticKittiDataset(Dataset):
-    def __init__(self, dataset_root_dir: Path, filenames: list, normalize_image=True):
+    def __init__(self, dataset_root_dir: Path, filenames: list, normalize_image=True, image_crop=(256, 1024)):
         """
         constructor for dataset class for semantic kitti
 
@@ -23,6 +23,7 @@ class SemanticKittiDataset(Dataset):
         self.filenames = filenames
         self.normalize_image = normalize_image
         self.image_transforms = Compose([
+            Resize(image_crop),
             ToTensorV2()
         ])
 

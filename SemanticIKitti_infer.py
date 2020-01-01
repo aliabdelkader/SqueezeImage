@@ -30,6 +30,8 @@ parser = argparse.ArgumentParser(description='semantic kitti infer')
 # data
 parser.add_argument('--dataset_root_path', default='data')
 parser.add_argument('--imageset_path', default='imageset')
+parser.add_argument('--image_width', default='1241')
+parser.add_argument('--image_height', default='376')
 
 # training
 parser.add_argument('--results_dir', default='results')
@@ -45,6 +47,8 @@ args = parser.parse_args()
 # data
 dataset_root_path = Path(args.dataset_root_path)
 imageset_path = Path(args.imageset_path)
+image_width = int(args.image_width)
+image_height = int(args.image_height)
 
 # training
 results_dir = Path(args.results_dir)
@@ -103,5 +107,6 @@ with torch.no_grad():
 
         predicted_image = predicted.cpu().detach().numpy().transpose((1, 2, 0))
 
+        cv2.resize(predicted_image, dsize=(image_height, image_width))
         save_path = get_save_path(results_dir, filename)
         cv2.imwrite(save_path, predicted_image)
