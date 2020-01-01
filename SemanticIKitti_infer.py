@@ -18,11 +18,13 @@ def get_filenames(filenames_path):
     return content
 
 
-def get_save_path(save_root_path, file_path, save_dir="SqueezeImage_preds"):
+def get_save_path(save_root_path, file_path, save_parent="SqueezeImage_preds"):
     file_path = Path(file_path)
     frame_number = file_path.stem
     seq_number = file_path.parent.parent.stem
-    save_path = save_root_path / seq_number / save_dir / "{}.png".format(frame_number)
+    save_dir = save_root_path / seq_number / save_parent
+    save_dir.mkdir(parents=True, exist_ok=True)
+    save_path =save_dir / "{}.png".format(frame_number)
     print(str(save_path))
     return str(save_path)
 
