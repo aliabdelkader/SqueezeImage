@@ -1,10 +1,10 @@
 #!/bin/bash
-
-python SemanticKitti_infer \
+export CUDA_VISIBLE_DEVICES=0
+python SemanticIKitti_infer.py \
 --dataset_root_path "/home/fusionresearch/SemanticKitti/dataset" \
 --imageset_path "semantickitti/imageset" \
---results_dir 'SemanticKitti' \
+--results_dir $(pwd)'/SemanticKitti' \
 --device 'cuda' \
 --model_name "SqueezeImage" \
---model_path "resutls/SqueezeImage/best_179.pth" \
+--model_path "results/SqueezeImage/best_179.pth" \
 --output_classes '20'
