@@ -23,5 +23,5 @@ sudo $(which python) CityscapesEvaluator.py \
 --image_height "512" \
 --image_width "1024" \
 --model_name "${model_name}" \
---model_path "results/SqueezeImage/best_99.pth" \
+--model_path "results/SqueezeImage/best_179.pth" \
 --output_classes "20" \
