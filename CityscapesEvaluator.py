@@ -9,6 +9,7 @@ import torch
 import yaml
 import argparse
 from tqdm import tqdm
+import time
 import cv2
 import numpy as np
 
@@ -96,7 +97,8 @@ if model_path.exists():
     print("loading saved model")
     model.load_state_dict(torch.load(str(model_path)))
 
-
+model_parameters = sum(p.numel() for p in model.parameters())
+print("total number of parameters {}".format(model_parameters))
 confusion_matrix = MetricsCalculator(class_map=dataset_config["class_map"])
 
 model = model.to(device)
@@ -106,20 +108,24 @@ results = []
 model.eval()
 confusion_matrix.reset_confusion_matrix()
 with torch.no_grad():
+    forward_times = []
     for idx, sample in tqdm(enumerate(dataloader), "testing loop"):
         # with labels
 
         image, labels = sample
         image, labels = image.to(device), labels.to(device)
-
+        ts_start = time.time()
         output = model(image)
-
+        ts_end = time.time()
+        ts_forward = ts_end - ts_start
+        forward_times.append(ts_forward)
+        print("forward pass time for seq: ", ts_forward, "sec")
         predicted = output.argmax(dim=1)
 
         predicted_image = predicted.cpu().detach().numpy().transpose((1, 2, 0))
         y_pred = predicted.cpu().detach().numpy().squeeze().reshape(-1)
 
-        cv2.imwrite(str(prediction_dir/"{}.png".format(idx)), predicted_image)
+        # cv2.imwrite(str(prediction_dir/"{}.png".format(idx)), predicted_image)
 
         if labels is not None:
             y_true = labels.cpu().detach().numpy().squeeze().reshape(-1)
@@ -128,7 +134,12 @@ with torch.no_grad():
 
             ground_truth_image = labels.cpu().detach().numpy().transpose((1, 2, 0))
 
-            cv2.imwrite(str(ground_truth_dir / "{}.png".format(idx)), ground_truth_image)
+            # cv2.imwrite(str(ground_truth_dir / "{}.png".format(idx)), ground_truth_image)
+    forward_times = np.array(forward_times, dtype=np.float64)
+    print("mean forward time in sec", np.nanmean(forward_times))
+    print("std forward time in sec", np.nanstd(forward_times))
+    print("mean forward time in milli sec", np.nanmean(forward_times*1000))
+    print("std forward time in milli sec", np.nanstd(forward_times * 1000))
 
 iou = confusion_matrix.calculate_average_iou()
 print("testing iou {}".format(iou))
