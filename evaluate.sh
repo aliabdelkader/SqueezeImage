@@ -14,8 +14,8 @@
 #--output_classes "20" \
 export CUDA_VISIBLE_DEVICES="5"
 export model_name="SqueezeImage"
-sudo python CityscapesEvaluator.py \
---dataset_root_path "/home/fusionresearch/Datasets/cityscape" \
+sudo $(which python) CityscapesEvaluator.py \
+--dataset_root_path "/raid/ali/cityscapes" \
 --imageset_path "cityscapes/imagesets" \
 --dataset_config_path "cityscapes/cityscapes.yaml" \
 --results_dir "/raid/ali/results/${model_name}" \
