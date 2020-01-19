@@ -12,6 +12,7 @@ import cv2
 import numpy as np
 import time
 
+
 def get_filenames(filenames_path):
     with open(str(filenames_path), 'r') as f:
         content = [i.replace('\n', '') for i in f.readlines()]
@@ -24,7 +25,7 @@ def get_save_path(save_root_path, file_path, save_parent="SqueezeImage_preds"):
     seq_number = file_path.parent.parent.stem
     save_dir = save_root_path / seq_number / save_parent
     save_dir.mkdir(parents=True, exist_ok=True)
-    save_path =save_dir / "{}.png".format(frame_number)
+    save_path = save_dir / "{}.png".format(frame_number)
     print(str(save_path))
     return str(save_path)
 
@@ -73,14 +74,11 @@ if not model_path.exists():
 # mkdirs
 results_dir.mkdir(parents=True, exist_ok=True)
 
-
 files_set = get_filenames(imageset_path / "all.txt")
 
 dataset = SemanticKittiDataset(dataset_root_dir=dataset_root_path, filenames=files_set, normalize_image=True)
 
 dataloader = DataLoader(dataset, batch_size=1)
-
-
 
 print("evaluating model: ", model_name)
 
@@ -90,7 +88,7 @@ if model_name == "SqueezeImage":
 
 if model_path.exists():
     print("loading saved model")
-    model.load_state_dict(torch.load(str(model_path)))
+    model.load_state_dict(torch.load(str(model_path), map_location=device))
 
 model = model.to(device)
 
@@ -116,11 +114,11 @@ with torch.no_grad():
         # predicted_image = cv2.resize(predicted_image, dsize=(image_width, image_height))
         #
         # save_path = get_save_path(results_dir, filename[0])
-        #status = cv2.imwrite(save_path, predicted_image)
-        #if not status:
-         #   print("image is not written", status)
+        # status = cv2.imwrite(save_path, predicted_image)
+        # if not status:
+        #   print("image is not written", status)
     forward_times = np.array(forward_times, dtype=np.float64)
     print("mean forward time in sec", np.nanmean(forward_times))
     print("std forward time in sec", np.nanstd(forward_times))
-    print("mean forward time in milli sec", np.nanmean(forward_times*1000))
+    print("mean forward time in milli sec", np.nanmean(forward_times * 1000))
     print("std forward time in milli sec", np.nanstd(forward_times * 1000))
