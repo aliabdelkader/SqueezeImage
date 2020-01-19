@@ -97,7 +97,7 @@ results = []
 model.eval()
 with torch.no_grad():
     forward_times = []
-    for idx, sample in enumerate(tqdm(dataloader), "testing loop"):
+    for idx, sample in enumerate(tqdm(dataloader, "testing loop")):
         # with labels
 
         image, filename = sample
