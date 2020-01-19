@@ -95,7 +95,7 @@ if model_name == "SqueezeImage":
 
 if model_path.exists():
     print("loading saved model")
-    model.load_state_dict(torch.load(str(model_path)))
+    model.load_state_dict(torch.load(str(model_path), map_location=device))
 
 model_parameters = sum(p.numel() for p in model.parameters())
 print("total number of parameters {}".format(model_parameters))
