@@ -10,7 +10,7 @@ import argparse
 from tqdm import tqdm
 import cv2
 import numpy as np
-
+import time
 
 def get_filenames(filenames_path):
     with open(str(filenames_path), 'r') as f:
@@ -98,21 +98,29 @@ model = model.to(device)
 results = []
 model.eval()
 with torch.no_grad():
+    forward_times = []
     for idx, sample in tqdm(enumerate(dataloader), "testing loop"):
         # with labels
 
         image, filename = sample
         image = image.to(device)
-
+        ts_forward = time.time()
         output = model(image)
-
-        predicted = output.argmax(dim=1)
-
-        predicted_image = predicted.cpu().detach().numpy().transpose((1, 2, 0)).astype('float32')
-
-        predicted_image = cv2.resize(predicted_image, dsize=(image_width, image_height))
-
-        save_path = get_save_path(results_dir, filename[0])
-        status = cv2.imwrite(save_path, predicted_image)
-        if not status:
-            print("image is not written", status)
+        ts_backward = time.time()
+        ts_forward = ts_backward - ts_forward
+        forward_times.append(ts_forward)
+        # predicted = output.argmax(dim=1)
+        #
+        # predicted_image = predicted.cpu().detach().numpy().transpose((1, 2, 0)).astype('float32')
+        #
+        # predicted_image = cv2.resize(predicted_image, dsize=(image_width, image_height))
+        #
+        # save_path = get_save_path(results_dir, filename[0])
+        #status = cv2.imwrite(save_path, predicted_image)
+        #if not status:
+         #   print("image is not written", status)
+    forward_times = np.array(forward_times, dtype=np.float64)
+    print("mean forward time in sec", np.nanmean(forward_times))
+    print("std forward time in sec", np.nanstd(forward_times))
+    print("mean forward time in milli sec", np.nanmean(forward_times*1000))
+    print("std forward time in milli sec", np.nanstd(forward_times * 1000))
