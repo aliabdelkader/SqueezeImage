@@ -97,7 +97,7 @@ results = []
 model.eval()
 with torch.no_grad():
     forward_times = []
-    for idx, sample in tqdm(enumerate(dataloader), "testing loop"):
+    for idx, sample in enumerate(tqdm(dataloader), "testing loop"):
         # with labels
 
         image, filename = sample
@@ -107,6 +107,7 @@ with torch.no_grad():
         ts_backward = time.time()
         ts_forward = ts_backward - ts_forward
         forward_times.append(ts_forward)
+        print("forward pass time for seq: ", ts_forward, "sec")
         # predicted = output.argmax(dim=1)
         #
         # predicted_image = predicted.cpu().detach().numpy().transpose((1, 2, 0)).astype('float32')
